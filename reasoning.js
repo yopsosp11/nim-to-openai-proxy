@@ -264,7 +264,7 @@ function getReasoningPayload(model, enableThinking, clientReasoningEffort, hasTo
     }
 
     case 'moonshotai/kimi-k3': {
-      // No off-switch — omitting the field falls back to Kimi's own 'max'.
+      // Default to 'low' for optimal roleplay unless an explicit effort is passed
       if (effort) return { reasoning_effort: effort };
       return { reasoning_effort: enableThinking ? 'high' : 'low' };
     }
