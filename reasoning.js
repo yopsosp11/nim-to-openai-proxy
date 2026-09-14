@@ -161,7 +161,12 @@ const REASONING_EFFORT_ENUMS = {
   'nvidia/nemotron-3-ultra-550b-a55b': ['low'],
   'minimaxai/minimax-m3': ['adaptive'],
   'moonshotai/kimi-k3': ['low', 'high', 'max'],
-  'meta/muse-glimmer-30b': ['none', 'minimal', 'low', 'medium', 'high', 'max']
+  'meta/muse-glimmer-30b': ['none', 'minimal', 'low', 'medium', 'high', 'max'],
+  // GLM-5.3-Flash's chat template only recognizes low/high; anything else
+  // (including 'medium') silently resolves to 'max' upstream. Keeping
+  // 'medium' out of this enum means validReasoningEffort() drops it with a
+  // warning instead of forwarding a value the model would just ignore.
+  'z-ai/glm-5.3-flash': ['low', 'high', 'max']
 };
 
 function validReasoningEffort(model, effort) {
@@ -267,6 +272,14 @@ function getReasoningPayload(model, enableThinking, clientReasoningEffort, hasTo
       // Default to 'low' for optimal roleplay unless an explicit effort is passed
       if (effort) return { reasoning_effort: effort };
       return { reasoning_effort: enableThinking ? 'high' : 'low' };
+    }
+
+    case 'z-ai/glm-5.3-flash': {
+      // Thinking is always-on for this model (the chat template injects a
+      // <think> block unconditionally) — there's no enable_thinking/off
+      // switch, only the effort tier. enableThinking=false has nothing to
+      // map to, so it's ignored here rather than silently no-op'd elsewhere.
+      return { chat_template_kwargs: { reasoning_effort: effort || 'max' } };
     }
 
     default:
