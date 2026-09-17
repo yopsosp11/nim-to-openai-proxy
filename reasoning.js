@@ -286,7 +286,7 @@ function getReasoningPayload(model, enableThinking, clientReasoningEffort, hasTo
     case 'z-ai/glm-5.3': {
       // Same always-on thinking behavior as the flash variant, but this
       // model defaults to 'low' rather than 'max' when no effort is given.
-      return { chat_template_kwargs: { reasoning_effort: effort || 'high' } };
+      return { chat_template_kwargs: { reasoning_effort: effort || 'low' } };
     }
 
     default:
