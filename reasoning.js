@@ -166,9 +166,8 @@ const REASONING_EFFORT_ENUMS = {
   // (including 'medium') silently resolves to 'max' upstream. Keeping
   // 'medium' out of this enum means validReasoningEffort() drops it with a
   // warning instead of forwarding a value the model would just ignore.
-  'z-ai/glm-5.3-flash': ['low', 'high', 'max']
+  'z-ai/glm-5.3-flash': ['low', 'high', 'max'],
   'z-ai/glm-5.3': ['low', 'high', 'max']
-
 };
 
 function validReasoningEffort(model, effort) {
@@ -283,9 +282,10 @@ function getReasoningPayload(model, enableThinking, clientReasoningEffort, hasTo
       // map to, so it's ignored here rather than silently no-op'd elsewhere.
       return { chat_template_kwargs: { reasoning_effort: effort || 'max' } };
     }
+
     case 'z-ai/glm-5.3': {
       // Same always-on thinking behavior as the flash variant, but this
-      // model also accepts 'lower' as a tier below 'low'.
+      // model defaults to 'low' rather than 'max' when no effort is given.
       return { chat_template_kwargs: { reasoning_effort: effort || 'low' } };
     }
 
