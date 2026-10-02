@@ -272,8 +272,8 @@ function getReasoningPayload(model, enableThinking, clientReasoningEffort, hasTo
     case 'moonshotai/kimi-k3': {
       // Default to 'low' for optimal roleplay unless an explicit effort is passed
       if (effort) return { reasoning_effort: effort };
-      return { reasoning_effort: enableThinking ? 'high' };
-    }
+  return { reasoning_effort: enableThinking ? 'high' : 'low' };
+}
 
     case 'z-ai/glm-5.3-flash': {
       // Thinking is always-on for this model (the chat template injects a
